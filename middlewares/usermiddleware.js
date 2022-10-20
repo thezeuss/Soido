@@ -14,6 +14,7 @@ exports.isLoggedIn = BigPromise(async (req, res, next) => {
 
     const decoded = jwt.verify( token, process.env.JWT_SECRET);
 
+    const currentUserID = decoded.id;
     req.user = await User.findById(decoded.id);
 
     next();
@@ -29,3 +30,26 @@ exports.customRole = (...roles) => {
 
      
 }
+
+exports.currentUserID = BigPromise(async (req, res, next) => { 
+    //grab the token
+    const token = req.cookies.token || req.header("Authorization").replace("Bearer ","");
+
+    if(!token) {
+        return next(new CustomError("Login first to access this page", 401))
+    }
+
+    const decoded = jwt.verify( token, process.env.JWT_SECRET);
+
+    const currentUserID = decoded.id;
+
+    req.header = currentUserID;
+    console.log(req.header);
+    next();
+
+
+    // return currentUserID;
+      
+ })
+
+    

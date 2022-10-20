@@ -13,7 +13,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // regular middleware
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+// app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 
 // 
@@ -31,10 +32,12 @@ app.use(morgan("tiny"));
 // import all routes
 const home = require("./routes/home");
 const user = require("./routes/user");
+const product = require("./routes/product");
 
 //middlewares of all routes
 app.use("/api/v1", home);
-app.use("/api/v1",user)
+app.use("/api/v1",user);
+app.use("/api/v1", product);
 
 //exporting app js
 module.exports  = app;

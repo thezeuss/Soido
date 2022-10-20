@@ -13,13 +13,16 @@ const userSchema = new mongoose.Schema({
 
     phoneno: {
         type: Number,
-        unique: true,
+        unique: [true, "This phoneno is already registered!"],
+        min: 1000000000,
+        max: 9999999999
         // validate: [validator.Number, 'Please enter correct number!']
 
     },
 
     email: {
         type: String,
+        unique: true,
         // required: [true, 'Please provide a name!'],
         validate: [validator.isEmail, 'Please enter email in correct format'],
         // unique: true,
@@ -37,6 +40,11 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: 'user'
+    },
+
+    state: {
+          type: String,
+        //   required: [true, "Please provide your State name!"]
     },
     photo: {
         id: {
@@ -81,22 +89,20 @@ userSchema.methods.getJwtToken = function(){
     })
 };
 // generate forgot password token (string)
-userSchema.methods.getForgotPasswordToken = function(){
-    // generate a long random string
-    const forgotToken = crypto.randomBytes(64).toString('hex');
-
-    //  this is for hashing. To be done  on backend as well
-    this.forgotPasswordToken = crypto.createHash('sha256').update(forgotToken).digest
-    ('hex');
-
-    // time of Token
-    this.forgotPasswordExpiry = Date.now() + 20*60*1000;
-
-    return forgotToken;
-
-
-
-}
+userSchema.methods.getForgotPasswordToken = function () {
+    // generate a long and randomg string
+    const forgotToken = crypto.randomBytes(20).toString("hex");
+  
+    // getting a hash - make sure to get a hash on backend
+    this.forgotPasswordToken = crypto
+      .createHash("sha256")
+      .update(forgotToken)
+      .digest("hex");
+  
+    //time of token
+    this.forgotPasswordExpiry = Date.now() + 20 * 60 * 1000;
+  
+    return forgotToken;}
 //
 
 
